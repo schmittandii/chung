@@ -33,7 +33,6 @@ if (em) {
 
 const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault()
-  console.log('parents');
   
   if (form.current) {
     const res = new FormData(form.current)
